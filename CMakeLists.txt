@@ -33,6 +33,12 @@ option(WITH_TLS_PSK
 option(WITH_EC
 	"Include Elliptic Curve support (requires WITH_TLS)?" ON)
 if (WITH_TLS)
+	if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
+    # for MacOS X or iOS, watchOS, tvOS (since 3.10.3)
+    set(OPENSSL_ROOT_DIR /opt/homebrew/Cellar/openssl@1.1/1.1.1s/)
+	elseif(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
+		set(OPENSSL_ROOT_DIR /usr/include/openssl/)
+	endif()
 	find_package(OpenSSL REQUIRED)
 	add_definitions("-DWITH_TLS")
 
@@ -110,11 +116,11 @@ endif()
 # Include projects
 # ========================================
 
-option(WITH_CLIENTS "Build clients?" ON)
+option(WITH_CLIENTS "Build clients?" OFF)
 option(WITH_BROKER "Build broker?" ON)
 option(WITH_APPS "Build apps?" ON)
-option(WITH_PLUGINS "Build plugins?" ON)
-option(DOCUMENTATION "Build documentation?" ON)
+option(WITH_PLUGINS "Build plugins?" OFF)
+option(DOCUMENTATION "Build documentation?" OFF)
 
 add_subdirectory(lib)
 if (WITH_CLIENTS)
